@@ -7,14 +7,14 @@ import java.util.Scanner;
 
 public class ClientViewerGUI extends JFrame {
 
+    final static int ServerPort = 3050;
+    final static String Host = "localhost";
+    String question = "";
     private JPanel mainPanel;
     private JButton helpButton;
     private JButton cancelButton;
     private JTextField errorMessagesTextField;
     private JTextField questionMessage;
-    final static int ServerPort = 3050;
-    final static String Host = "localhost";
-    String question = "";
 
     public ClientViewerGUI(String title) {
 
@@ -31,79 +31,8 @@ public class ClientViewerGUI extends JFrame {
         JFrame frame = new ClientViewerGUI("Help Queue Client System");
         frame.setVisible(true);
         String question = "";
-        serverStart();
-
 
     }
-
-
-
-    public static void serverStart()throws UnknownHostException, IOException{
-        Scanner scn = new Scanner(System.in);
-
-        // getting host ip
-        InetAddress ip = InetAddress.getByName(Host);
-
-        // establish the connection
-        Socket s = new Socket(ip, ServerPort);
-
-        // obtaining input and out streams
-        DataInputStream dis = new DataInputStream(s.getInputStream());
-        DataOutputStream dos = new DataOutputStream(s.getOutputStream());
-
-        // sendMessage thread
-        Thread sendMessage = new Thread(new Runnable() {
-            private boolean exit = false;
-            // private String name;   could new Thread(___, name) above;
-
-            @Override
-            public void run() {
-                while (!exit) {
-
-                    // read the message to deliver.
-                    String msg = scn.nextLine();
-
-                    // write on the output stream
-                    try {
-                        dos.writeUTF(msg);
-                    } catch (IOException e) {
-                        System.out.println("Client, send message section - caught exception");
-                        //e.printStackTrace();
-                        exit = true;
-                    }
-                }    // end - while
-                System.out.println("Client, thread sendMessage - run(), after while loop");
-            }    // end - method run
-        });    // end - thread sendMessage
-
-
-        // readMessage thread
-        Thread readMessage = new Thread(new Runnable() {
-            private boolean exit = false;
-            // private String name;   could new Thread(___, name) above;
-
-            @Override
-            public void run() {
-                while (!exit) {
-                    try {
-                        // read the message sent to this client
-                        String msg = dis.readUTF();
-                        System.out.println(msg);
-                    } catch (IOException e) {
-                        //System.out.println("Client, read message section - caught exception");
-                        //e.printStackTrace();
-                        exit = true;
-                    }
-                }    // end - while true
-                System.out.println("Client, thread readMessage - run(), after while loop");
-            }    // end - method run
-        });    // end - thread readMessage
-
-        sendMessage.start();
-        readMessage.start();
-
-    }    // end - method main
-
 
 
     private class Listener implements ActionListener {
@@ -112,16 +41,40 @@ public class ClientViewerGUI extends JFrame {
 
         public void actionPerformed(ActionEvent e) {
 
-            if (e.getSource() == helpButton){
+            if (e.getSource() == helpButton) {
 
-               question = questionMessage.getText();
+                question = questionMessage.getText();
+
+                InetAddress ip = null;
+                try {
+                    ip = InetAddress.getByName(Host);
+                } catch (UnknownHostException unknownHostException) {
+                    unknownHostException.printStackTrace();
+                }
 
 
-               //add to DisplayerGUI and database
+                // establish the connection
+                Socket s = null;
+                try {
+                    s = new Socket(ip, ServerPort);
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
 
-            }
+                // obtaining input and out streams
 
-            else if(e.getSource() == cancelButton){
+                try {
+                    DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+                    dos.writeUTF(question);
+
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+
+
+                //add to DisplayerGUI and database
+
+            } else if (e.getSource() == cancelButton) {
 
                 //delete from database and remove from DisplayerGUI
 
@@ -129,5 +82,6 @@ public class ClientViewerGUI extends JFrame {
 
         }
     }
+
 
 }

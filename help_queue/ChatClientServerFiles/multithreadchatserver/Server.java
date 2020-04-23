@@ -32,9 +32,9 @@ public class Server
 		while (true)  
 		{  
 			// NOTE: an accept call will wait (block) indefinitely waiting for a connection; if you want the enclosing loop to run regularly, 
-			//		you need to put a timeout on your serversocket and use exception handling to determine if the accept call was successful
+			//		you need to put a timeout on your server socket and use exception handling to determine if the accept call was successful
 			//		(any code following the accept call will execute after the accept() succeeds) or failed due to the timeout (throws a 
-			//		SocketTimeoutException).  See the Java docs for the ServerSocket class or use online search on this topioc for details.
+			//		SocketTimeoutException).  See the Java docs for the ServerSocket class or use online search on this topic for details.
 			// Wait for and accept an incoming request
 			s = ss.accept(); 
 			// System.out.println("New client request received : " + s); 
