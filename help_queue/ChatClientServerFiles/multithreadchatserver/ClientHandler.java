@@ -60,9 +60,13 @@ class ClientHandler implements Runnable {
 				// TODO: this search could be slow if large number of clients - could use HashMap
 
 				for (ClientHandler mc : Server.ar) {
+					System.out.println("After the for loop in ClientHandler" + mc.name + "\n" + recipient);
+
 					// if the recipient is found, write on its output stream
-					if (mc.name.equals(recipient) && mc.isloggedin == true)
+					//&& mc.isloggedin == true
+					if (mc.name.equals(recipient))
 					{
+						System.out.println("Before the write in ClientHandler");
 						mc.dos.writeUTF(this.name +" : "+ MsgToSend);
 						break;
 					}

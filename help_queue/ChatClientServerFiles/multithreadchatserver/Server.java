@@ -44,13 +44,13 @@ public class Server
 			DataOutputStream dos = new DataOutputStream(s.getOutputStream()); 
 
 			// Create a new handler object for handling this request.
-			String clientName = "client " + i;
+			String clientName = "client" + i;
 			ClientHandler mtch = new ClientHandler(s, clientName, dis, dos); 
 
 			// Create a new Thread with this client handler object. 
 			Thread t = new Thread(mtch); 
            
-			System.out.println("Adding client " + clientName  + " to active client list"); 
+			System.out.println("Adding client " + clientName + " to active client list");
 
 			// add this client to active clients list 
 			ar.add(mtch); 
